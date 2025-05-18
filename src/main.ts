@@ -7,7 +7,7 @@ import { EdgesGeometry, LineBasicMaterial, LineSegments } from "three";
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(20, 20, 20);
+camera.position.set(-38, 40, 11);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -15,7 +15,7 @@ document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(0, 0, 0);
+controls.target.set(-17, 6, -26);
 controls.update();
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
