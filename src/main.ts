@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import type { IFCModel } from "web-ifc-three";
+import { EdgesGeometry, LineBasicMaterial, LineSegments } from "three";
 
 const scene = new THREE.Scene();
 
@@ -33,19 +34,35 @@ async function loadModel(fileName: string): Promise<IFCModel> {
 
   showLoading(true); // ← 表示
 
+  const color = getModelColor(fileName);
+  const edgeColor = color.clone().lerp(new THREE.Color(0xffffff), 0.5);
+  const offset = getPolygonOffset(fileName);
+
   const loader = new IFCLoader();
   loader.ifcManager.setWasmPath("https://unpkg.com/web-ifc@0.0.39/");
 
   const model = (await loader.loadAsync(`/${fileName}`)) as IFCModel;
 
-  const color = getModelColor(fileName);
-  const offset = getPolygonOffset(fileName);
+  const geometry = model.mesh.geometry;
+  const edges = new EdgesGeometry(geometry);
+  const edgeLines = new THREE.LineSegments(
+    edges,
+    new THREE.LineBasicMaterial({
+      color: edgeColor, // 輪郭線の色（黒など）
+      transparent: true,
+      opacity: 0.3, // 半透明度（0〜1）
+      depthWrite: false, // 背後が見えるように
+    })
+  );
+
+  // 半透明メッシュと同じ位置に配置
+  model.add(edgeLines); // 🔻 model に add するのがポイント
 
   if (fileName.includes("Arch")) {
     model.mesh.material = new THREE.MeshStandardMaterial({
       color,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.2,
       depthWrite: false,
       polygonOffset: true,
       polygonOffsetFactor: 1,
@@ -71,11 +88,11 @@ function showLoading(show: boolean) {
   if (el) el.style.display = show ? "block" : "none";
 }
 
-function getModelColor(fileName: string): string {
-  if (fileName.includes("Arch")) return "#64b5f6"; // 赤系
-  if (fileName.includes("CON")) return "#81c784"; // 青系
-  if (fileName.includes("HVAC")) return "#e57373"; // 緑系
-  return "#ffffff"; // デフォルト
+function getModelColor(fileName: string): THREE.Color {
+  if (fileName.includes("Arch")) return new THREE.Color("#64b5f6");
+  if (fileName.includes("CON")) return new THREE.Color("#81c784");
+  if (fileName.includes("HVAC")) return new THREE.Color("#e57373");
+  return new THREE.Color("#ffffff"); // デフォルト
 }
 
 function getPolygonOffset(fileName: string): { factor: number; units: number } {
@@ -127,4 +144,9 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
 
   renderer.setSize(width, height);
+
+  console.log({
+    cameraPosition: camera.position.clone(),
+    controlsTarget: controls.target.clone(),
+  });
 });
