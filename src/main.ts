@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import type { IFCModel } from "web-ifc-three";
-import { EdgesGeometry, LineBasicMaterial, LineSegments } from "three";
+import { EdgesGeometry } from "three";
 
 const scene = new THREE.Scene();
 
