@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import type { IFCModel } from "web-ifc-three";
+//import type { IFCModel } from "web-ifc-three";
 import { EdgesGeometry, LineBasicMaterial, LineSegments } from "three";
 
 const scene = new THREE.Scene();
@@ -26,10 +26,10 @@ const ambient = new THREE.AmbientLight(0xffffff, 0.4); // 色, 強さ
 scene.add(ambient);
 
 // 各ファイルごとにモデルを保持
-const modelMap = new Map<string, IFCModel>();
+const modelMap = new Map<string, any>();
 
 // 一度ロードしたモデルはキャッシュ
-async function loadModel(fileName: string): Promise<IFCModel> {
+async function loadModel(fileName: string): Promise<any> {
   if (modelMap.has(fileName)) return modelMap.get(fileName)!;
 
   showLoading(true); // ← 表示
@@ -41,17 +41,18 @@ async function loadModel(fileName: string): Promise<IFCModel> {
   const loader = new IFCLoader();
   loader.ifcManager.setWasmPath("https://unpkg.com/web-ifc@0.0.39/");
 
-  const model = (await loader.loadAsync(`/${fileName}`)) as IFCModel;
+  const modelUrl = import.meta.env.BASE_URL + fileName;
+  const model = (await loader.loadAsync(modelUrl)) as any;
 
   const geometry = model.mesh.geometry;
   const edges = new EdgesGeometry(geometry);
   const edgeLines = new THREE.LineSegments(
     edges,
     new THREE.LineBasicMaterial({
-      color: edgeColor, // 輪郭線の色（黒など）
+      color: edgeColor,
       transparent: true,
-      opacity: 0.3, // 半透明度（0〜1）
-      depthWrite: false, // 背後が見えるように
+      opacity: 0.3,
+      depthWrite: false,
     })
   );
 
