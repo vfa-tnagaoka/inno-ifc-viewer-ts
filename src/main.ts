@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const scene = new THREE.Scene();
 
@@ -9,6 +10,11 @@ camera.position.set(10, 10, 10);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // モダンな慣性付き操作
+controls.target.set(0, 0, 0); // 注視点を原点に
+controls.update();
 
 // 光源
 const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -33,6 +39,7 @@ input.addEventListener("change", async (event) => {
 // 描画ループ
 const animate = () => {
   requestAnimationFrame(animate);
+  controls.update();
   renderer.render(scene, camera);
 };
 animate();

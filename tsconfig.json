@@ -6,8 +6,10 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
+    /* 🛠 修正箇所 */
+    "moduleResolution": "node",                // ← これが重要！
+    "esModuleInterop": true,                   // ← 推奨
+    "allowSyntheticDefaultImports": true,      // ← 推奨
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
