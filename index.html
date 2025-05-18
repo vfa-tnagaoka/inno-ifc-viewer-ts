@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>IFC Viewer TS</title>
+    <title>IFC Viewer</title>
     <style>
       body {
         margin: 0;
@@ -11,16 +11,22 @@
       canvas {
         display: block;
       }
-      #file-input {
+      .ui {
         position: absolute;
         top: 10px;
         left: 10px;
         z-index: 100;
+        display: flex;
+        gap: 10px;
       }
     </style>
   </head>
   <body>
-    <input type="file" id="file-input" />
+    <div class="ui">
+      <button data-ifc="NVW_DCR-LOD200_Arch.ifc">Arch</button>
+      <button data-ifc="NVW_DCR-LOD200_Eng-CON-1.ifc">CON</button>
+      <button data-ifc="NVW_DCR-LOD300_Eng-HVAC.ifc">HVAC</button>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
