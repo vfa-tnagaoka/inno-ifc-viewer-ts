@@ -21,6 +21,9 @@ const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(5, 10, 7.5);
 scene.add(light);
 
+const ambient = new THREE.AmbientLight(0xffffff, 0.4); // 色, 強さ
+scene.add(ambient);
+
 // 各ファイルごとにモデルを保持
 const modelMap = new Map<string, IFCModel>();
 
@@ -32,8 +35,20 @@ async function loadModel(fileName: string): Promise<IFCModel> {
   loader.ifcManager.setWasmPath("https://unpkg.com/web-ifc@0.0.39/");
 
   const model = (await loader.loadAsync(`/${fileName}`)) as IFCModel;
+
+  // 安全にマテリアルを上書き（確実な色分け）
+  const color = getModelColor(fileName);
+  model.mesh.material = new THREE.MeshStandardMaterial({ color });
+
   modelMap.set(fileName, model);
   return model;
+}
+
+function getModelColor(fileName: string): string {
+  if (fileName.includes("Arch")) return "#e57373"; // 赤系
+  if (fileName.includes("CON")) return "#64b5f6"; // 青系
+  if (fileName.includes("HVAC")) return "#81c784"; // 緑系
+  return "#ffffff"; // デフォルト
 }
 
 // トグル表示の管理
