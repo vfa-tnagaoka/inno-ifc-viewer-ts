@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IFC Viewer TS</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+      #file-input {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="file-input" />
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
